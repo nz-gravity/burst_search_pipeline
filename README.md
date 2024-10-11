@@ -15,3 +15,16 @@ Three files:
 - *background.npz*: background noise from the O3a observation period (no GW signals, glitches)
 - *bbh_for_challenge.npy*: synthetic BBH signals 
 - *sglf_for_challenge.npy*:  low-frequency Sine-Gaussian signals 
+
+
+## Expected predictions
+
+Predicted probability for if there is an "anomalous" signal or not 
+
+- Supernovae
+- Continuous Waves from Spinning Neutron Stars
+- Stochastic Background
+- Cosmic Strings
+- Primordial Gravitational Waves
+
+
