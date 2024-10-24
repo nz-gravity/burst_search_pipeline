@@ -179,17 +179,27 @@ ifos.inject_signal(
     injection_polarizations=injection_strain
 )
 
-snrs = compute_snr(
-    signal=injection_strain['plus'],
+snr_kwgs = dict(
     data=ifos[0].frequency_domain_strain,
     psd=ifos[0].power_spectral_density_array,
     freq=ifos[0].frequency_array,
     fmask=ifos[0].strain_data.frequency_mask
 )
 
+best_snr = compute_snr(signal=injection_strain['plus'], **snr_kwgs)
+
 fig, axes = plt.subplots(2, 1, figsize=(5, 8))
 plot_freq_domain(ifos[0], injection_strain['plus'], axes[0])
 plot_time_domain(ifos[0], injection_strain_time['plus'], axes[1])
-plt.suptitle(f"Matched-filter SNR {snrs[0]:.2f}, Optimal SNR {snrs[1]:.2f}")
+plt.suptitle(f"Matched-filter SNR {best_snr[0]:.2f}, Optimal SNR {best_snr[1]:.2f}")
 plt.tight_layout()
 plt.savefig('supernova.png')
+
+
+signals = supernova(None, 10, n=100)
+snrs = [
+    compute_snr(s, **snr_kwgs) for s in signals['plus']
+]
+
+
+
