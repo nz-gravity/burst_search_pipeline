@@ -2,6 +2,18 @@
 
 Our burst-search pipeline for the [NSF HDR A3D3: Detecting Anomalous Gravitational Wave Signals](https://www.codabench.org/competitions/2626/) challenge.
 
+## Installation instructions
+
+```bash
+pip install poetry
+poetry install
+```
+
+For running tests:
+```
+poetry run pytest --cov=package_name tests/
+```
+
 
 ## Provided Training Dataset
 - Data from LVK O3a

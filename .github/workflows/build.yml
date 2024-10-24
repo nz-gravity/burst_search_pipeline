@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to run the CI on
+  pull_request:
+    branches:
+      - main  # or the branches you want to check PRs against
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # Specify the Python version you want to use
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Build Documentation
+        run: |
+          cd docs  
+          poetry run sphinx-build -b html . _build/html  # Build HTML documentation
+
+      # Optionally, deploy documentation to GitHub Pages
+      - name: Deploy Documentation to GitHub Pages
+        if: github.ref == 'refs/heads/main'  # Only deploy from the main branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html  # Path to the built documentation
+          publish_branch: gh-pages  # Target branch for GitHub Pages
+
+      - name: Run tests with coverage
+        run: |
+          poetry run pytest --cov=bust_search_pipeline tests/ --cov-report=xml --cov-report=term
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2.3.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}  # Your Coveralls repo token
+
+      - name: Build package
+        run: poetry build  # Optional: build the package if you want to publish it
