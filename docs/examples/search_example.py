@@ -81,7 +81,7 @@ def plot_freq_domain(ifo: bilby.gw.detector.Interferometer, freq_signal, ax=None
     signal_asd = gwutils.asd_from_freq_series(
         freq_data=freq_signal, df=df)
 
-    ax.scatter(ifo.strain_data.frequency_array[ifo.strain_data.frequency_mask],
+    ax.loglog(ifo.strain_data.frequency_array[ifo.strain_data.frequency_mask],
               signal_asd[ifo.strain_data.frequency_mask],
               color=SIGNAL_COL,
               label=f'Signal (SNR: {ifo.meta_data["optimal_SNR"]:.2f})', alpha=0.5)
@@ -101,7 +101,7 @@ def plot_time_domain(ifo, time_signal, ax=None):
     # unroll raw data
     strain = np.roll(strain, 55)
     ax.plot(x, strain, color=DATA_COL, label=f"{ifo.name} Data", alpha=0.5, lw=3)
-    ax.scatter(x, time_signal, color=SIGNAL_COL, label=f'Signal', alpha=0.5)
+    ax.plot(x, time_signal, color=SIGNAL_COL, label=f'Signal', alpha=0.5)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('Strain')
     ax.legend()
@@ -114,7 +114,6 @@ def inner_product(aa, bb, frequency, PSD):
     return 4. * np.real(integral)
 
 
-
 def compute_snr(signal, data, freq, psd, fmask):
     """
 
@@ -125,11 +124,9 @@ def compute_snr(signal, data, freq, psd, fmask):
     h = signal.astype(np.complex128)[fmask]
     dh = inner_product(d, h, freq[fmask], psd[fmask])
     hh = inner_product(h, h, freq[fmask], psd[fmask])
-
     o_snr = np.sqrt(hh)
     mf_snr = dh / o_snr
-
-    return o_snr, mf_snr
+    return mf_snr, o_snr
 
 
 sampling_frequency = 4096
@@ -183,11 +180,11 @@ ifos.inject_signal(
 )
 
 snrs = compute_snr(
-    injection_strain['plus'],
-    ifos[0].frequency_domain_strain,
-    ifos[0].power_spectral_density_array,
-    ifos[0].frequency_array,
-    ifos[0].strain_data.frequency_mask
+    signal=injection_strain['plus'],
+    data=ifos[0].frequency_domain_strain,
+    psd=ifos[0].power_spectral_density_array,
+    freq=ifos[0].frequency_array,
+    fmask=ifos[0].strain_data.frequency_mask
 )
 
 fig, axes = plt.subplots(2, 1, figsize=(5, 8))
