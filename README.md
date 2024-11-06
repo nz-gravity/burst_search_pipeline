@@ -5,13 +5,12 @@ Our burst-search pipeline for the [NSF HDR A3D3: Detecting Anomalous Gravitation
 ## Installation instructions
 
 ```bash
-pip install poetry
-poetry install
+pip install -e .[devv]
 ```
 
 For running tests:
 ```
-poetry run pytest --cov=package_name tests/
+pytest --cov=burst_search_pipeline tests/
 ```
 
 

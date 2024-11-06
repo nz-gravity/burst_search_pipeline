@@ -1,40 +1,56 @@
-[tool.poetry]
+[train_models-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8.0",
+    "wheel"
+]
+train_models-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
+include = ["burst_search_pipeline*"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["burst_search_pipeline.tests*"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+
+
+[project]
 name = "burst_search_pipeline"
 version = "0.0.1"
 description = "Burst search pipeline"
-authors = ["NZ-Gravity <your.email@example.com>"]
-license = "MIT"  # or another license of your choice
-readme = "README.md"  # Optional, path to your README file
-packages = [{ include = "burst_search_pipeline", from = "src" }]  # Specify your package directory
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+license = {text = "MIT"}
+authors = [
+    { name = "NZ-Gravity", email = "your.email@example.com" }
+]
 
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-# Add your project dependencies here, e.g.:
-starccato = "^0.0.2"
-bilby = "^2.3.0"
-astropy = "^6.1.4"
+dependencies = [
+    "starccato>=0.0.2",
+    "bilby>=2.3.0",
+    "astropy>=6.1.4",
+    "numpy<2",
+    "gwpy"
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest-cov = "^5.0.0"  # Your existing request
-sphinx = "^4.0"
-sphinx-book-theme= "^1.0"
-nbsphinx = "^0.8.7"  # To include Jupyter Notebooks
-recommonmark = "^0.7.1"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+# Optional: specify development dependencies if desired
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=5.0.0,<6.0.0",
+    "sphinx>=4.0.0,<5.0.0",
+    "sphinx-book-theme>=1.0.0,<2.0.0",
+    "nbsphinx>=0.8.7,<1.0.0",
+    "recommonmark>=0.7.1,<1.0.0"
+]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]  # Specify the directory containing your tests
-
+testpaths = ["tests"]
 
 [tool.black]
-line-length = 88  # Optional: configure Black formatter settings
+line-length = 88
 
 [tool.flake8]
-max-line-length = 88  # Optional: configure Flake8 settings
+max-line-length = 88
 
 [tool.isort]
-profile = "black"  # Optional: configure isort settings
+profile = "black"
