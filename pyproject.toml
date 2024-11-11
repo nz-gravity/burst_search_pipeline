@@ -30,7 +30,8 @@ dependencies = [
     "bilby>=2.3.0",
     "astropy>=6.1.4",
     "numpy<2",
-    "gwpy"
+    "gwpy",
+    "pycbc"
 ]
 
 # Optional: specify development dependencies if desired
